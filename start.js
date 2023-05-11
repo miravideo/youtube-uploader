@@ -15,4 +15,4 @@ const video1 = {
   tags: argv.tags.split(','),
   isNotForKid: argv.not_for_kid
 }
-upload(credentials, [video1], { headless: false }).then(console.log)
+upload(credentials, [video1], { headless: true }).then(console.log)
