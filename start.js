@@ -13,6 +13,7 @@ const video1 = {
   // publishType: argv.publish_type,
   gameTitleSearch: argv.category,
   tags: argv.tags.split(','),
-  isNotForKid: argv.not_for_kid
+  isNotForKid: argv.not_for_kid,
+  thumbnail: argv.thumbnail
 }
 upload(credentials, [video1], { headless: true }).then(console.log)
