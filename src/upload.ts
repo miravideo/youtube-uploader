@@ -233,7 +233,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     const childOption = await page.$x('//*[contains(text(),"No, it\'s")]')
     await childOption[0].click()
-    
+
     // There is no reason for this to be called. Also you should be using #toggle-button not going by the text...
     // const moreOption = await page.$x("//*[normalize-space(text())='Show more']")
     // await moreOption[0]?.click()
@@ -304,7 +304,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         }
         // console.log( "Show more finished." )
     }
-    
+
     // Add tags
     if (tags) {
         //show more
@@ -412,7 +412,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     if (videoJSON.publishType) {
         await page.waitForSelector("#privacy-radios *[name=\""+videoJSON.publishType+"\"]", { visible: true });
-        
+
         await page.waitForTimeout(1000);
 
         await page.click("#privacy-radios *[name=\""+videoJSON.publishType+"\"]");
@@ -1281,19 +1281,21 @@ async function selectGame( page: Page, gameTitle: string, gameSelector?: ( arg0:
         console.error( `selectGame: categoryDiv is null.` )
         return
     }
-    
+
     // Press drop down to populate choices.
     const categoryDropdownToggle = await categoryDiv.$( "#category > ytcp-select > ytcp-text-dropdown-trigger" )
     await categoryDropdownToggle?.click()
     await sleep( 1000 )
-    
-    const gamingCategoryButton = await page.$( "[test-id='CREATOR_VIDEO_CATEGORY_GADGETS']" )
+
+    const gamingCategoryButton = await page.$( `[test-id='${gameTitle}']` )
     if ( !gamingCategoryButton )
         return
 
     await gamingCategoryButton.click()
     await sleep( 500 )
 
+    // 不是游戏类型就可以不去填写game title了
+    if (gameTitle !== 'CREATOR_VIDEO_CATEGORY_GADGETS') return
     // Wait for input.
     const gameTitleBox = await categoryDiv.$( ".ytcp-form-gaming input" )
     if ( gameTitleBox == null )
@@ -1305,7 +1307,7 @@ async function selectGame( page: Page, gameTitle: string, gameSelector?: ( arg0:
     // Type and call the game selector delegate.
     await gameTitleBox.focus()
     await gameTitleBox.type( gameTitle )
-    
+
     // Wait for options.
     const optionsSelectorHost = "#search-results > tp-yt-paper-dialog:not([aria-hidden='true'])";
     const optionsPopupHost = await page.waitForSelector( optionsSelectorHost )
@@ -1321,7 +1323,7 @@ async function selectGame( page: Page, gameTitle: string, gameSelector?: ( arg0:
     let pressed = false;
     for ( let i = 0; i < buttonOptions.length; i++ ) {
         const button = buttonOptions[i]
-        
+
         let testId = await button.evaluate( ( el: Element ) => el.getAttribute( "test-id" ) )
         if ( testId == null || !testId.startsWith( `{"title"` ) )
             continue
@@ -1337,7 +1339,7 @@ async function selectGame( page: Page, gameTitle: string, gameSelector?: ( arg0:
         pressed = true
         break
     }
-    
+
     if ( !pressed && buttonOptions.length != 0 )
     {
         // Just select none.
