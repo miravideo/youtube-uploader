@@ -21,7 +21,7 @@ const _upload = async (req) => {
     isNotForKid: argv.not_for_kid,
     thumbnail: argv.thumbnail
   }
-  return await upload(credentials, [video1], { headless: false })
+  return await upload(credentials, [video1], { headless: true })
 }
 
 // parse application/x-www-form-urlencoded
