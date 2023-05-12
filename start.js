@@ -21,6 +21,7 @@ const _upload = async (req) => {
     isNotForKid: argv.not_for_kid,
     thumbnail: argv.thumbnail
   }
+  console.log('video1', video1)
   return await upload(credentials, [video1], { headless: true })
 }
 
