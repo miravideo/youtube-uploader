@@ -86,6 +86,7 @@ export const upload = async (
 // `videoJSON = {}`, avoid `videoJSON = undefined` throw error.
 async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport) {
     const pathToFile = videoJSON.path
+
     if (!pathToFile) {
         throw new Error("function `upload`'s second param `videos`'s item `video` must include `path` property.")
     }
@@ -329,6 +330,8 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         await page.evaluate((el) => el.click(), langName[langName.length - 1])
     }
 
+    await sleep(5000)
+
     // Setting Game Title ( Will also set Category to gaming )
     if ( gameTitleSearch ) {
         await selectGame( page, gameTitleSearch, videoJSON.gameSelector )
@@ -400,15 +403,46 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         } catch {}
     }
 
-    // await sleep(2000)
-    await page.waitForXPath(nextBtnXPath)
-    // click next button
-    next = await page.$x(nextBtnXPath)
-    await next[0].click()
-    await page.waitForXPath(nextBtnXPath)
-    // click next button
-    next = await page.$x(nextBtnXPath)
-    await next[0].click()
+    await sleep(5000)
+
+    if (videoJSON.subtitle) {
+        await page.waitForXPath('//*[@id="subtitles-button"][not(@disabled)]', {timeout: 60000 * 5})
+        const subtitleButton = await page.$x('//*[@id="subtitles-button"][not(@disabled)]')
+        subtitleButton[0]?.click()
+        await page.waitForXPath('//*[@id="choose-upload-file"]')
+        const uploadButton = await page.$x('//*[@id="choose-upload-file"]')
+        uploadButton[0]?.click()
+
+        await page.waitForXPath("//*[normalize-space(text())='Continue']")
+        const chooseButton = await page.$x("//*[normalize-space(text())='Continue']")
+        const [chooser] = await Promise.all([
+            page.waitForFileChooser(),
+            chooseButton[0]?.click() // button that triggers file selection
+        ])
+        await chooser.accept([videoJSON.subtitle])
+
+
+        await page.waitForXPath('//*[@id="publish-button"][not(@disabled)]')
+        const doneButton = await page.$x('//*[@id="publish-button"][not(@disabled)]')
+        doneButton[0]?.click()
+
+
+    } else {
+        await page.waitForXPath(nextBtnXPath)
+        // click next button
+        next = await page.$x(nextBtnXPath)
+        await next[0].click()
+        await sleep(2000)
+        await page.waitForXPath(nextBtnXPath)
+        // click next button
+        next = await page.$x(nextBtnXPath)
+        await next[0].click()
+    }
+
+    await sleep(5000)
+    await page.waitForXPath('//*[@id="step-badge-3"]')
+    const visibilityButton = await page.$x('//*[@id="step-badge-3"]')
+    visibilityButton[0]?.click()
 
     if (videoJSON.publishType) {
         await page.waitForSelector("#privacy-radios *[name=\""+videoJSON.publishType+"\"]", { visible: true });

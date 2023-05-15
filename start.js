@@ -19,7 +19,8 @@ const _upload = async (req) => {
     gameTitleSearch: argv.category,
     tags: argv.tags,
     isNotForKid: argv.not_for_kid,
-    thumbnail: argv.thumbnail
+    thumbnail: argv.thumbnail,
+    subtitle: argv.subtitle
   }
   console.log('video1', video1)
   return await upload(credentials, [video1], { headless: true })
