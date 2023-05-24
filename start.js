@@ -6,7 +6,7 @@ const app = express();
 
 const _upload = async (req) => {
   const argv = req.body;
-  const credentials = { email: argv.email, pass: argv.password, recoveryemail: argv.recovery_email}
+  const credentials = { email: argv.email, pass: argv.password, recoveryemail: argv.recovery_email, job_id: argv.job_id}
   const video1 = {
     path: argv.path,
     title: argv.title,

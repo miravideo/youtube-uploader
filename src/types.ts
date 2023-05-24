@@ -69,6 +69,7 @@ export interface Credentials {
     email: string
     pass: string
     recoveryemail?: string | undefined
+    job_id?: string
 }
 
 export interface GameData {
