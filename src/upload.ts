@@ -78,7 +78,7 @@ export const upload = async (
         return uploadedYTLink
     } catch (err) {
         if (credentials.job_id) {
-            page.screenshot({ path: `${credentials.job_id}.png` });
+            page.screenshot({ path: `/Users/vistudio/code/youtube-uploader/${credentials.job_id}.png` });
         }
 
         if (browser) await browser.close()
