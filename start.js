@@ -51,5 +51,5 @@ app.post('/upload', async (req, res) => {
 const port = process.argv[2] || 3000;
 
 app.listen(Number(port), () => {
-  console.log('Server running on port 3000');
+  console.log(`Server running on port ${port}`);
 });
