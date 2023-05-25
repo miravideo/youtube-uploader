@@ -35,7 +35,10 @@ app.use(bodyParser.json());
 let lock = false
 
 app.post('/upload', async (req, res) => {
-  if (lock) res.end(JSON.stringify({reject: true}));
+  if (lock) {
+    res.end(JSON.stringify({reject: true}));
+    return
+  }
   lock = true
   _upload(req).then((videoLink) => {
     res.setHeader('Content-Type', 'application/json');
