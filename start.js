@@ -32,16 +32,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+let lock = false
+
 app.post('/upload', async (req, res) => {
+  if (lock) res.end(JSON.stringify({reject: true}));
+  lock = true
   _upload(req).then((videoLink) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({video: videoLink}));
+    lock = false
   }).catch((e) => {
     const error = new Error(e);
     res.end(JSON.stringify({error: error.message}));
+    lock = false
   })
 });
 
-app.listen(3000, () => {
+const port = process.argv[2] || 3000;
+
+app.listen(Number(port), () => {
   console.log('Server running on port 3000');
 });
