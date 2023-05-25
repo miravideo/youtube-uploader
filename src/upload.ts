@@ -80,7 +80,7 @@ export const upload = async (
     } catch (err) {
         console.log('credentials.job_id', credentials.job_id)
         if (credentials.job_id) {
-            page.screenshot({ path: `./${credentials.job_id}.png` });
+            await page.screenshot({ path: `./${credentials.job_id}.png` });
         }
 
         if (browser) await browser.close()
