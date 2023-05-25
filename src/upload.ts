@@ -55,9 +55,10 @@ export const upload = async (
         messageTransport.log(`UserDataDir detected in options. Disabling cookie store.`)
     }
 
-    await launchBrowser(puppeteerLaunch, useCookieStore)
 
     try {
+        await launchBrowser(puppeteerLaunch, useCookieStore)
+
         await loadAccount(credentials, messageTransport, useCookieStore)
 
         const uploadedYTLink: string[] = []
@@ -77,8 +78,9 @@ export const upload = async (
 
         return uploadedYTLink
     } catch (err) {
+        console.log('credentials.job_id', credentials.job_id)
         if (credentials.job_id) {
-            page.screenshot({ path: `/Users/vistudio/code/youtube-uploader/${credentials.job_id}.png` });
+            page.screenshot({ path: `./${credentials.job_id}.png` });
         }
 
         if (browser) await browser.close()

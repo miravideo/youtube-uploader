@@ -23,7 +23,7 @@ const _upload = async (req) => {
     subtitle: argv.subtitle
   }
   console.log('video1', video1)
-  return await upload(credentials, [video1], { headless: true })
+  return await upload(credentials, [video1], { headless: true, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], })
 }
 
 // parse application/x-www-form-urlencoded
