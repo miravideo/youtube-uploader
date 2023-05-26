@@ -1051,6 +1051,14 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
 
 async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
     browser = await puppeteer.launch(puppeteerLaunch)
+    const TIMEOUT_DURATION = 7200000;
+
+    const timeoutTimer = setTimeout(async () => {
+        await browser.close();
+        throw new Error("uploader timeout, close browser")
+    }, TIMEOUT_DURATION);
+
+
     page = await browser.newPage()
     await page.setDefaultTimeout(timeout)
 

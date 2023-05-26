@@ -46,6 +46,7 @@ app.post('/upload', async (req, res) => {
     lock = false
   }).catch((e) => {
     const error = new Error(e);
+    console.log('error', error)
     res.end(JSON.stringify({error: error.message}));
     lock = false
   })
