@@ -1139,22 +1139,22 @@ async function login(localPage: Page, credentials: Credentials, messageTransport
             (smsAuthSelector) => document.querySelector(smsAuthSelector) !== null,
             smsAuthSelector
         )
-        if (isOnSmsAuthPage) {
-            try {
-                if (!messageTransport.onSmsVerificationCodeSent)
-                    throw new Error('onSmsVerificationCodeSent not implemented')
-
-                let code = await messageTransport.onSmsVerificationCodeSent()
-
-                if (!code) throw new Error('Invalid SMS Code')
-
-                await localPage.type(smsAuthSelector, code.trim())
-                await localPage.keyboard.press('Enter')
-            } catch (error) {
-                await browser.close()
-                throw error
-            }
-        }
+        // if (isOnSmsAuthPage) {
+        //     try {
+        //         if (!messageTransport.onSmsVerificationCodeSent)
+        //             throw new Error('onSmsVerificationCodeSent not implemented')
+        //
+        //         let code = await messageTransport.onSmsVerificationCodeSent()
+        //
+        //         if (!code) throw new Error('Invalid SMS Code')
+        //
+        //         await localPage.type(smsAuthSelector, code.trim())
+        //         await localPage.keyboard.press('Enter')
+        //     } catch (error) {
+        //         await browser.close()
+        //         throw error
+        //     }
+        // }
     } catch (error: any) {
         const recaptchaInputSelector = 'input[aria-label="Type the text you hear or see"]'
 
