@@ -175,8 +175,8 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
             if (progressChecker == undefined || !curProgress) return
             curProgress = curProgress.split(" ").find((txt: string) => txt.indexOf("%") != -1)
             let newProgress = curProgress ? parseInt(curProgress.slice(0, -1)) : 0
-            if (progress.progress == newProgress) return
             upload_progress = newProgress
+            if (progress.progress == newProgress) return
             progress.progress = newProgress
             videoJSON.onProgress!(progress)
         }, 500)
@@ -198,6 +198,9 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         browser.close();
         throw new Error('Daily upload limit reached');
     }
+
+    await sleep(3000)
+
     if (upload_progress !== 100) {
         browser.close();
         throw new Error('Upload video failed');
