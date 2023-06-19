@@ -91,6 +91,7 @@ export const upload = async (
 
 // `videoJSON = {}`, avoid `videoJSON = undefined` throw error.
 async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport) {
+    let upload_progress = 0;
     const pathToFile = videoJSON.path
 
     if (!pathToFile) {
@@ -175,6 +176,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
             curProgress = curProgress.split(" ").find((txt: string) => txt.indexOf("%") != -1)
             let newProgress = curProgress ? parseInt(curProgress.slice(0, -1)) : 0
             if (progress.progress == newProgress) return
+            upload_progress = newProgress
             progress.progress = newProgress
             videoJSON.onProgress!(progress)
         }, 500)
@@ -195,6 +197,10 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     if (uploadResult === 'dailyUploadReached') {
         browser.close();
         throw new Error('Daily upload limit reached');
+    }
+    if (upload_progress !== 100) {
+        browser.close();
+        throw new Error('Upload video failed');
     }
 
     // Wait for upload to go away and processing to start, skip the wait if the user doesn't want it.
