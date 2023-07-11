@@ -285,7 +285,10 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 await page.evaluate((el) => el.click(), createplaylist[1])
 
                 // Enter new playlist name
-                await page.keyboard.type(' ' + playlistName.substring(0, 148))
+                const playlistNameBoxes = await page.$x('//ytcp-playlist-creation-dialog/ytcp-dialog//*[@id="textbox"]')
+                await playlistNameBoxes[0].focus()
+                await page.waitForTimeout(1000)
+                await playlistNameBoxes[0].type(' ' + playlistName.substring(0, 148))
                 // click create & then done button
                 const createplaylistbtn = await page.$x("//*[normalize-space(text())='Create']")
 
