@@ -199,18 +199,13 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         throw new Error('Daily upload limit reached');
     }
 
-    await sleep(3000)
-
-    if (upload_progress !== 100) {
+    try {
+        const upload_complete = page.waitForXPath('//*[contains(text(),"upload complete")]', { hidden: true, timeout: 0 })
+        const process_start= page.waitForXPath('//*[contains(text(),"Processing up to SD")]', { hidden: true, timeout: 0 })
+        await Promise.any([upload_complete, process_start])
+    } catch (e) {
         browser.close();
         throw new Error('Upload video failed');
-    }
-
-    // Wait for upload to go away and processing to start, skip the wait if the user doesn't want it.
-    if (!videoJSON.skipProcessingWait) {
-        await page.waitForXPath('//*[contains(text(),"Video upload complete")]', { hidden: true, timeout: 0 })
-    } else {
-        await sleep(5000)
     }
 
     if (videoJSON.onProgress) {
