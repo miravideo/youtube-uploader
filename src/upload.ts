@@ -274,7 +274,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 // click on playlist dropdown
                 await page.evaluate((el) => el.click(), playlist[0])
                 // click New playlist button
-                const createPlaylistXPath = "//*[normalize-space(text())='Create playlist']"
+                const createPlaylistXPath = "//*[normalize-space(text())='Create playlist'] | //*[normalize-space(text())='New playlist']"
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
                 await page.evaluate((el) => el.click(), createPlaylistElements[0])
 
