@@ -282,6 +282,9 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 await page.focus(`#search-input`)
                 await page.type(`#search-input`, playlistName)
 
+                console.log('全凭？？？？？？？？？')
+                await sleep(10000)
+
                 const escapedPlaylistName = escapeQuotesForXPath(playlistName);
                 const playlistToSelectXPath = "//*[normalize-space(text())=" + escapedPlaylistName + "]";
                 await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
