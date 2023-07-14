@@ -294,7 +294,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
             } catch (error) {
                 // Creating new playlist
                 // click on playlist dropdown
-                await page.evaluate((el) => el.click(), playlist[0])
+                // await page.evaluate((el) => el.click(), playlist[0])
                 // click New playlist button
 
                 console.log('准备点击新建playlist')
@@ -311,7 +311,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 const createplaylist = await page.$x(newPlaylistXPath)
 
                 console.log('点击新建list按钮')
-                await page.evaluate((el) => el.click(), createplaylist[1])
+                await page.evaluate((el) => el.click(), createplaylist[0])
                 console.log('??????')
 
                 await sleep(10000)
