@@ -298,7 +298,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 // click New playlist button
 
                 console.log('准备点击新建playlist')
-                const createPlaylistXPath = '//*[@id="dialog"]/div[2]/div/ytcp-button'
+                const createPlaylistXPath = '/html/body/ytcp-playlist-dialog/tp-yt-paper-dialog/div[2]/div/ytcp-button/div'
                 await page.waitForXPath(createPlaylistXPath)
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
                 await page.evaluate((el) => el.click(), createPlaylistElements[0])
@@ -306,7 +306,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 await sleep(10000)
 
                 console.log('准备点击list新建菜单')
-                const newPlaylistXPath = '//*[@id="text-item-0"]'
+                const newPlaylistXPath = '/html/body/ytcp-playlist-dialog/tp-yt-paper-dialog/div[2]/div/ytcp-text-menu/tp-yt-paper-dialog/tp-yt-paper-listbox/tp-yt-paper-item[1]/ytcp-ve/tp-yt-paper-item-body/div/div/div/yt-formatted-string'
                 await page.waitForXPath(newPlaylistXPath)
                 const createplaylist = await page.$x(newPlaylistXPath)
 
