@@ -286,6 +286,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 const playlistToSelectXPath = "//*[normalize-space(text())=" + escapedPlaylistName + "]";
                 await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
                 const playlistNameSelector = await page.$x(playlistToSelectXPath)
+                console.log('应该是空', playlistNameSelector)
                 await page.evaluate((el) => el.click(), playlistNameSelector[0])
                 createplaylistdone = await page.$x("//*[normalize-space(text())='Done']")
                 await page.evaluate((el) => el.click(), createplaylistdone[0])
@@ -308,7 +309,10 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 const newPlaylistXPath = '//*[@id="text-item-0"]'
                 await page.waitForXPath(newPlaylistXPath)
                 const createplaylist = await page.$x(newPlaylistXPath)
+
+                console.log('点击新建list按钮')
                 await page.evaluate((el) => el.click(), createplaylist[1])
+                console.log('??????')
 
                 await sleep(10000)
                 // Enter new playlist name
