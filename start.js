@@ -23,7 +23,8 @@ const _upload = async (req) => {
     isNotForKid: argv.not_for_kid,
     thumbnail: argv.thumbnail,
     subtitle: argv.subtitle,
-    playlist: argv.playlist
+    playlist: argv.playlist,
+    job_id: argv.job_id
   }
   console.log('video1', video1)
   return await upload(credentials, [video1], { headless: headless, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], })

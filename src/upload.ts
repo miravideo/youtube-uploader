@@ -201,16 +201,30 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     await sleep(3000)
 
-    if (upload_progress !== 100) {
-        browser.close();
-        throw new Error('Upload video failed');
-    }
-
     try {
         const upload_complete = page.waitForXPath('//*[contains(text(),"upload complete")]', { hidden: true, timeout: 0 })
         const process_start= page.waitForXPath('//*[contains(text(),"Processing up to SD")]', { hidden: true, timeout: 0 })
         await Promise.any([upload_complete, process_start])
     } catch (e) {
+        browser.close();
+        throw new Error('Upload video failed');
+    }
+
+    if (upload_progress !== 100) {
+        const job_id = videoJSON.job_id
+        const options = {
+            path: `${job_id}.png`, // 截图保存的文件路径
+            fullPage: true // 是否截取整个页面，默认为 false
+        };
+
+        await page.screenshot(options);
+
+        const htmlContent = await page.content();
+
+        fs.writeFileSync(`${job_id}.html`, htmlContent, 'utf8');
+
+        fs.appendFileSync('log.txt', `${job_id}: ${upload_progress}` + '\n', 'utf8');
+
         browser.close();
         throw new Error('Upload video failed');
     }
