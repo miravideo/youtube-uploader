@@ -279,7 +279,8 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 await page.evaluate((el) => el.click(), playlist[0])
                 // Type the playlist name to filter out
 
-                const playlistToSelectXPath = "//*[normalize-space(text())=" + playlistName + "]";
+                const escapedPlaylistName = escapeQuotesForXPath(playlistName);
+                const playlistToSelectXPath = "//*[normalize-space(text())=" + escapedPlaylistName + "]";
                 await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
                 const playlistNameSelector = await page.$x(playlistToSelectXPath)
                 console.log('应该是空', playlistNameSelector)
