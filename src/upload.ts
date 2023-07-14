@@ -302,12 +302,15 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
                 await page.evaluate((el) => el.click(), createPlaylistElements[0])
 
+                await sleep(10000)
+
                 console.log('准备点击list新建菜单')
                 const newPlaylistXPath = '//*[@id="text-item-0"]'
                 await page.waitForXPath(newPlaylistXPath)
                 const createplaylist = await page.$x(newPlaylistXPath)
                 await page.evaluate((el) => el.click(), createplaylist[1])
 
+                await sleep(10000)
                 // Enter new playlist name
                 const playlistNameBoxes = await page.$x('//ytcp-playlist-creation-dialog/ytcp-dialog//*[@id="textbox"]')
                 await playlistNameBoxes[0].focus()
