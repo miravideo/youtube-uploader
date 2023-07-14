@@ -297,7 +297,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 // click New playlist button
 
                 console.log('准备点击新建playlist')
-                const createPlaylistXPath = "//*[normalize-space(text())='Create playlist'] | //*[normalize-space(text())='New playlist']"
+                const createPlaylistXPath = '//*[@id="dialog"]/div[2]/div/ytcp-button'
                 await page.waitForXPath(createPlaylistXPath)
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
                 await page.evaluate((el) => el.click(), createPlaylistElements[0])
