@@ -295,11 +295,14 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 // click on playlist dropdown
                 await page.evaluate((el) => el.click(), playlist[0])
                 // click New playlist button
+
+                console.log('准备点击新建playlist')
                 const createPlaylistXPath = "//*[normalize-space(text())='Create playlist'] | //*[normalize-space(text())='New playlist']"
                 await page.waitForXPath(createPlaylistXPath)
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
                 await page.evaluate((el) => el.click(), createPlaylistElements[0])
 
+                console.log('准备点击list新建菜单')
                 const newPlaylistXPath = '//*[@id="text-item-0"]'
                 await page.waitForXPath(newPlaylistXPath)
                 const createplaylist = await page.$x(newPlaylistXPath)
