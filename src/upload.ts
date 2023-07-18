@@ -189,7 +189,10 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     }
 
     // Wait for upload to complete
-    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") and @value="100"]', { timeout: 0 }).then(() => 'uploadComplete')
+    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") and @value="100"]', { timeout: 0 }).then(() => {
+        upload_progress = 100
+        return 'uploadComplete'
+    })
 
     // Check if daily upload limit is reached
     const dailyUploadPromise = page.waitForXPath('//div[contains(text(),"Daily upload limit reached")]', { timeout: 0 }).then(() => 'dailyUploadReached');
@@ -199,12 +202,11 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         throw new Error('Daily upload limit reached');
     }
 
-    await sleep(3000)
-
     try {
         const upload_complete = page.waitForXPath('//*[contains(text(),"upload complete")]', { hidden: true, timeout: 0 })
+        const upload_complete_upper = page.waitForXPath('//*[contains(text(),"Upload complete")]', { hidden: true, timeout: 0 })
         const process_start= page.waitForXPath('//*[contains(text(),"Processing up to SD")]', { hidden: true, timeout: 0 })
-        await Promise.any([upload_complete, process_start])
+        await Promise.any([upload_complete, process_start, upload_complete_upper])
     } catch (e) {
         browser.close();
         throw new Error('Upload video failed');
@@ -283,7 +285,6 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 const playlistToSelectXPath = "//*[normalize-space(text())=" + escapedPlaylistName + "]";
                 await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
                 const playlistNameSelector = await page.$x(playlistToSelectXPath)
-                console.log('应该是空', playlistNameSelector)
                 await page.evaluate((el) => el.click(), playlistNameSelector[0])
                 createplaylistdone = await page.$x("//*[normalize-space(text())='Done']")
                 await page.evaluate((el) => el.click(), createplaylistdone[0])
@@ -294,7 +295,6 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 // await page.evaluate((el) => el.click(), playlist[0])
                 // click New playlist button
 
-                console.log('准备点击新建playlist')
                 const createPlaylistXPath = '/html/body/ytcp-playlist-dialog/tp-yt-paper-dialog/div[2]/div/ytcp-button/div'
                 await page.waitForXPath(createPlaylistXPath)
                 const createPlaylistElements = await page.$x(createPlaylistXPath)
@@ -302,14 +302,11 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
                 await sleep(2000)
 
-                console.log('准备点击list新建菜单')
                 const newPlaylistXPath = '/html/body/ytcp-playlist-dialog/tp-yt-paper-dialog/div[2]/div/ytcp-text-menu/tp-yt-paper-dialog/tp-yt-paper-listbox/tp-yt-paper-item[1]/ytcp-ve/tp-yt-paper-item-body/div/div/div/yt-formatted-string'
                 await page.waitForXPath(newPlaylistXPath)
                 const createplaylist = await page.$x(newPlaylistXPath)
 
-                console.log('点击新建list按钮')
                 await page.evaluate((el) => el.click(), createplaylist[0])
-                console.log('??????')
 
                 await sleep(2000)
                 // Enter new playlist name
