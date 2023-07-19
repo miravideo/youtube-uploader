@@ -1,4 +1,5 @@
 export interface Video {
+    job_id?: string
     path: string
     title: string
     description: string
