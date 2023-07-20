@@ -26,7 +26,8 @@ const _upload = async (req) => {
     playlist: argv.playlist,
     job_id: argv.job_id
   }
-  console.log('video1', video1)
+  const currentTime = new Date();
+  console.log(currentTime.toLocaleString(), ': ', video1)
   return await upload(credentials, [video1], { headless: headless, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], })
 }
 
