@@ -204,7 +204,6 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
         fs.appendFileSync('log.txt', `${job_id}: ${upload_progress}` + '\n', 'utf8');
 
-        browser.close();
         return 'uploadComplete'
     })
 
