@@ -226,6 +226,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         throw new Error('Upload video failed');
     }
 
+    await sleep(3000)
     if (upload_progress !== 100) {
         throw new Error('Upload video failed');
     }
