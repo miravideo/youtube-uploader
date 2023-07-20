@@ -190,7 +190,21 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     // Wait for upload to complete
     const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") and @value="100"]', { timeout: 0 }).then(() => {
-        upload_progress = 100
+        const job_id = videoJSON.job_id
+        const options = {
+            path: `${job_id}.png`, // 截图保存的文件路径
+            fullPage: true // 是否截取整个页面，默认为 false
+        };
+
+        await page.screenshot(options);
+
+        const htmlContent = await page.content();
+
+        fs.writeFileSync(`${job_id}.html`, htmlContent, 'utf8');
+
+        fs.appendFileSync('log.txt', `${job_id}: ${upload_progress}` + '\n', 'utf8');
+
+        browser.close();
         return 'uploadComplete'
     })
 
@@ -213,21 +227,6 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     }
 
     if (upload_progress !== 100) {
-        const job_id = videoJSON.job_id
-        const options = {
-            path: `${job_id}.png`, // 截图保存的文件路径
-            fullPage: true // 是否截取整个页面，默认为 false
-        };
-
-        await page.screenshot(options);
-
-        const htmlContent = await page.content();
-
-        fs.writeFileSync(`${job_id}.html`, htmlContent, 'utf8');
-
-        fs.appendFileSync('log.txt', `${job_id}: ${upload_progress}` + '\n', 'utf8');
-
-        browser.close();
         throw new Error('Upload video failed');
     }
 
