@@ -1172,7 +1172,7 @@ async function login(localPage: Page, credentials: Credentials, messageTransport
     // password isnt required in the case that a code was sent via google auth
     else {
         const passwordInputSelector = 'input[type="password"]:not([aria-hidden="true"])'
-        await localPage.waitForSelector(passwordInputSelector)
+        await localPage.waitForSelector(passwordInputSelector, {timeout: 10000})
         await localPage.waitForTimeout(3000)
         await localPage.type(passwordInputSelector, credentials.pass, { delay: 50 })
 
