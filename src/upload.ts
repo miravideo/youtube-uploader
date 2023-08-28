@@ -189,7 +189,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     }
 
     // Wait for upload to complete
-    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") and @value="100"]', { timeout: 0 }).then(async () => {
+    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") or @value="100"]', { timeout: 0 }).then(async () => {
         const job_id = videoJSON.job_id
         const options = {
             path: `log/${job_id}.png`, // 截图保存的文件路径
