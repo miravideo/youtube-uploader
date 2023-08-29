@@ -1317,19 +1317,19 @@ async function scrollTillVeiw(page: Page, element: string) {
 async function changeChannel(channelName: string) {
     await page.goto("https://www.youtube.com/channel_switcher");
 
-    try {
-        const gotItXPath = `//*[normalize-space(text())='got it']`;
-        const element = await page.waitForXPath(gotItXPath, { timeout: 10000 })
-        await element!.click()
-    } catch (e) {
-        console.log('no got it button')
-    }
-
     const channelNameXPath =
         `//*[normalize-space(text())='${channelName}']`;
     const element = await page.waitForXPath(channelNameXPath);
 
     await element!.click()
+
+    try {
+        const gotItXPath = `//*[normalize-space(text())='got it']`;
+        const element = await page.waitForXPath(gotItXPath, { timeout: 3000 })
+        await element!.click()
+    } catch (e) {
+        console.log('no got it button')
+    }
 
     await page.waitForNavigation({
         waitUntil: "networkidle0"
