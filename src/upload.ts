@@ -1325,7 +1325,7 @@ async function changeChannel(channelName: string) {
 
     try {
         const gotItXPath = `//*[@id="confirm-button"]/yt-button-shape/button`;
-        const element = await page.waitForXPath(gotItXPath, { timeout: 3000 })
+        const element = await page.waitForXPath(gotItXPath, { timeout: 500 })
         await element!.click()
     } catch (e) {
         console.log('no got it button')
