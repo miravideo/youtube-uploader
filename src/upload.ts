@@ -189,7 +189,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     }
 
     // Wait for upload to complete
-    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") or @value="100"]', { timeout: 0 }).then(async () => {
+    const uploadCompletePromise = page.waitForXPath('//tp-yt-paper-progress[contains(@class,"ytcp-video-upload-progress-hover") and @value="100"]', { timeout: 0 }).then(async () => {
         const job_id = videoJSON.job_id
         const options = {
             path: `log/${job_id}.png`, // 截图保存的文件路径
@@ -1316,6 +1316,18 @@ async function scrollTillVeiw(page: Page, element: string) {
 
 async function changeChannel(channelName: string) {
     await page.goto("https://www.youtube.com/channel_switcher");
+
+
+    try {
+        const gotItXPath = `//*[normalize-space(text())='got it']`;
+        const element = await page.waitForXPath(gotItXPath, { timeout: 10000 })
+        await element!.click()
+    } catch (e) {
+        console.log('no got it button')
+    }
+
+    await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
+
 
     const channelNameXPath =
         `//*[normalize-space(text())='${channelName}']`;
