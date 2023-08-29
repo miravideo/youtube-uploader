@@ -1317,7 +1317,6 @@ async function scrollTillVeiw(page: Page, element: string) {
 async function changeChannel(channelName: string) {
     await page.goto("https://www.youtube.com/channel_switcher");
 
-
     try {
         const gotItXPath = `//*[normalize-space(text())='got it']`;
         const element = await page.waitForXPath(gotItXPath, { timeout: 10000 })
@@ -1325,9 +1324,6 @@ async function changeChannel(channelName: string) {
     } catch (e) {
         console.log('no got it button')
     }
-
-    await page.waitForXPath(playlistToSelectXPath, { timeout: 10000 })
-
 
     const channelNameXPath =
         `//*[normalize-space(text())='${channelName}']`;
