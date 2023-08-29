@@ -1325,7 +1325,7 @@ async function changeChannel(channelName: string) {
 
     try {
         const gotItXPath = `//*[normalize-space(text())='got it']`;
-        const element = await page.waitForXPath(gotItXPath, { timeout: 3000 })
+        const element = await page.waitForXPath(gotItXPath, { timeout: 300000 })
         await element!.click()
     } catch (e) {
         console.log('no got it button')
