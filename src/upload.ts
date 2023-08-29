@@ -1324,16 +1324,27 @@ async function changeChannel(channelName: string) {
     await element!.click()
 
     try {
+        await page.waitForNavigation({
+            waitUntil: "networkidle0",
+            timeout: 10000
+        });
+    } catch (e) {
+        console.log('need click got it')
+    }
+
+    try {
         const gotItXPath = `//*[@id="confirm-button"]/yt-button-shape/button`;
-        const element = await page.waitForXPath(gotItXPath, { timeout: 500 })
+        const element = await page.waitForXPath(gotItXPath, { timeout: 3000 })
         await element!.click()
+        await page.waitForNavigation({
+            waitUntil: "networkidle0",
+            timeout: 10000
+        });
     } catch (e) {
         console.log('no got it button')
     }
 
-    await page.waitForNavigation({
-        waitUntil: "networkidle0"
-    });
+
 }
 
 function escapeQuotesForXPath(str: string) {
