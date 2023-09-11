@@ -508,7 +508,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         }
     }
 
-    if (videoJSON.isChannelMonetized) {
+    if (isChannelMonetized.length > 0) {
         try {
             await page.waitForSelector(
                 "#dialog-buttons #secondary-action-button",
