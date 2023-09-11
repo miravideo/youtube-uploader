@@ -395,17 +395,20 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         const inputButton = '//*[@id="outer"]'
         await page.waitForXPath(inputButton, { timeout: 10000 })
         const buttonElements = await page.$x(inputButton)
-        buttonElements[0].click()
+        await buttonElements[0].click()
+        await sleep(3000)
 
         const onButton = '//*[@id="radio-on"]'
         await page.waitForXPath(onButton, { timeout: 3000 })
         const onElements = await page.$x(onButton)
-        onElements[0].click()
+        await onElements[0].click()
+        await sleep(3000)
 
         const saveButton = '//*[@id="save-button"]'
         const saveElements = await page.$x(saveButton)
-        saveElements[0].click()
+        await saveElements[0].click()
 
+        await sleep(3000)
         await page.waitForXPath(nextBtnXPath);
         const next = await page.$x(nextBtnXPath);
         await next[0].click();
@@ -420,12 +423,14 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         const noneButtonXpath = "//*[contains(@class, 'all-none-checkbox')]"
         await page.waitForXPath(noneButtonXpath, { timeout: 10000 })
         const buttonElements = await page.$x(noneButtonXpath)
-        buttonElements[0].click()
+        await buttonElements[0].click()
+        await sleep(3000)
 
         const submitButton = '//*[@id="submit-questionnaire-button"]'
         await page.waitForXPath(submitButton, { timeout: 3000 })
         const submitElements = await page.$x(submitButton)
-        submitElements[0].click()
+        await submitElements[0].click()
+        await sleep(3000)
 
         await page.waitForXPath(nextBtnXPath);
         const next = await page.$x(nextBtnXPath);
