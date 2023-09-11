@@ -388,63 +388,48 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     next = await page.$x(nextBtnXPath);
     await next[0].click();
 
-    if (videoJSON.isChannelMonetized) {
-        try {
-            await page.waitForSelector("#child-input ytcp-video-monetization", { visible: true, timeout: 10000 });
+    const isChannelMonetized = await page.$x("//div[normalize-space(text())='Monetization']")
 
-            await page.waitForTimeout(1500);
+    if (isChannelMonetized.length > 0) {
+        await isChannelMonetized[0].click()
+        const inputButton = '//*[@id="outer"]'
+        await page.waitForXPath(inputButton, { timeout: 10000 })
+        const buttonElements = await page.$x(inputButton)
+        buttonElements[0].click()
 
-            await page.click("#child-input ytcp-video-monetization");
+        const onButton = '//*[@id="radio-on"]'
+        await page.waitForXPath(onButton, { timeout: 3000 })
+        const onElements = await page.$x(onButton)
+        onElements[0].click()
 
-            await page.waitForSelector(
-                "ytcp-video-monetization-edit-dialog.cancel-button-hidden .ytcp-video-monetization-edit-dialog #radioContainer #onRadio"
-            );
-            await page.evaluate(() =>
-                (document.querySelector("ytcp-video-monetization-edit-dialog.cancel-button-hidden .ytcp-video-monetization-edit-dialog #radioContainer #onRadio") as HTMLInputElement).click()
-            );
+        const saveButton = '//*[@id="save-button"]'
+        const saveElements = await page.$x(saveButton)
+        saveElements[0].click()
 
-            await page.waitForTimeout(1500);
+        await page.waitForXPath(nextBtnXPath);
+        const next = await page.$x(nextBtnXPath);
+        await next[0].click();
+        await sleep(3000)
+    }
 
-            await page.waitForSelector(
-                "ytcp-video-monetization-edit-dialog.cancel-button-hidden .ytcp-video-monetization-edit-dialog #save-button",
-                { visible: true }
-            );
-            await page.click(
-                "ytcp-video-monetization-edit-dialog.cancel-button-hidden .ytcp-video-monetization-edit-dialog #save-button"
-            );
+    const adElementXpath = "//div[normalize-space(text())='Ad suitability']"
+    const adElements = await page.$x(adElementXpath)
 
-            await page.waitForTimeout(1500);
+    if (adElements.length > 0) {
+        await adElements[0].click()
+        const noneButtonXpath = "//*[contains(@class, 'all-none-checkbox')]"
+        await page.waitForXPath(noneButtonXpath, { timeout: 10000 })
+        const buttonElements = await page.$x(noneButtonXpath)
+        buttonElements[0].click()
 
-            await page.waitForXPath(nextBtnXPath);
-            next = await page.$x(nextBtnXPath);
-            await next[0].click();
-        } catch { }
+        const submitButton = '//*[@id="submit-questionnaire-button"]'
+        await page.waitForXPath(submitButton, { timeout: 3000 })
+        const submitElements = await page.$x(submitButton)
+        submitElements[0].click()
 
-        try {
-            await page.waitForSelector(
-                ".ytpp-self-certification-questionnaire .ytpp-self-certification-questionnaire #checkbox-container",
-                { visible: true, timeout: 10000 }
-            );
-            await page.evaluate(() =>
-                (document.querySelector(".ytpp-self-certification-questionnaire .ytpp-self-certification-questionnaire #checkbox-container") as HTMLInputElement).click()
-            );
-
-            await page.waitForTimeout(1500);
-
-            await page.waitForSelector(
-                ".ytpp-self-certification-questionnaire .ytpp-self-certification-questionnaire #submit-questionnaire-button",
-                { visible: true }
-            );
-            await page.evaluate(() =>
-                (document.querySelector(".ytpp-self-certification-questionnaire .ytpp-self-certification-questionnaire #submit-questionnaire-button") as HTMLButtonElement).click()
-            );
-
-            await page.waitForXPath(nextBtnXPath);
-            next = await page.$x(nextBtnXPath);
-            await next[0].click();
-
-            await page.waitForTimeout(1500);
-        } catch {}
+        await page.waitForXPath(nextBtnXPath);
+        const next = await page.$x(nextBtnXPath);
+        await next[0].click();
     }
 
     await sleep(5000)
@@ -484,8 +469,8 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     }
 
     await sleep(5000)
-    await page.waitForXPath('//*[@id="step-badge-3"]')
-    const visibilityButton = await page.$x('//*[@id="step-badge-3"]')
+    await page.waitForXPath("//div[normalize-space(text())='Visibility']")
+    const visibilityButton = await page.$x("//div[normalize-space(text())='Visibility']")
     visibilityButton[0]?.click()
 
     if (videoJSON.publishType) {
