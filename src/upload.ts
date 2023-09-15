@@ -476,13 +476,14 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     await sleep(5000)
     await page.waitForXPath("//div[normalize-space(text())='Visibility']")
     const visibilityButton = await page.$x("//div[normalize-space(text())='Visibility']")
-    visibilityButton[0]?.click()
+    await visibilityButton[0]?.click()
 
+    await sleep(5000)
     const publicButtonXpath = '//*[@id="privacy-radios"]/tp-yt-paper-radio-button[contains(@name, "PUBLIC")]'
     await page.waitForXPath(publicButtonXpath)
     const publicButton = await page.$x(publicButtonXpath)
-    publicButton[0]?.click()
-    await sleep(2000)
+    await publicButton[0].click()
+    await sleep(5000)
 
     // Get publish button
     const publishXPath =
