@@ -1091,7 +1091,7 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
 }
 
 async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
-    let wsKey = await axios.get('http://localhost:9222/json/version');
+    let wsKey = await axios.get('http://127.0.0.1:9222/json/version');
     let browser=await puppeteer.connect({
         browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
         defaultViewport:null
