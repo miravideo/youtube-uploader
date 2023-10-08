@@ -3,6 +3,8 @@ import puppeteer from 'puppeteer-extra'
 import { PuppeteerNodeLaunchOptions, Browser, Page, ElementHandle } from 'puppeteer'
 import fs from 'fs-extra'
 import path from 'path'
+const axios  = require('axios');
+
 
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')()
 StealthPlugin.enabledEvasions.delete('iframe.contentWindow')
@@ -1089,7 +1091,12 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
 }
 
 async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
-    browser = await puppeteer.launch(puppeteerLaunch)
+    let wsKey = await axios.get('http://localhost:9222/json/version');
+    let browser=await puppeteer.connect({
+        browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
+        defaultViewport:null
+    });
+    // browser = await puppeteer.launch(puppeteerLaunch)
     const TIMEOUT_DURATION = 7200000;
 
     const timeoutTimer = setTimeout(async () => {
