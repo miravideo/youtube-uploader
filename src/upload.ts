@@ -3,8 +3,6 @@ import puppeteer from 'puppeteer-extra'
 import { PuppeteerNodeLaunchOptions, Browser, Page, ElementHandle } from 'puppeteer'
 import fs from 'fs-extra'
 import path from 'path'
-const axios  = require('axios');
-
 
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')()
 StealthPlugin.enabledEvasions.delete('iframe.contentWindow')
@@ -76,7 +74,7 @@ export const upload = async (
             uploadedYTLink.push(link)
         }
 
-        await page.close()
+        await browser.close()
 
         return uploadedYTLink
     } catch (err) {
@@ -85,7 +83,7 @@ export const upload = async (
             // await page.screenshot({ path: `./${credentials.job_id}.png` });
         }
 
-        if (browser) await page.close()
+        if (browser) await browser.close()
 
         throw err;
     }
@@ -186,7 +184,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     const errorMessage = await page.evaluate(() => (document.querySelector('.error-area.style-scope.ytcp-uploads-dialog') as HTMLElement)?.innerText.trim())
     if (errorMessage) {
-        await page.close()
+        await browser.close()
         throw new Error('Youtube returned an error : ' + errorMessage)
     }
 
@@ -213,7 +211,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     const dailyUploadPromise = page.waitForXPath('//div[contains(text(),"Daily upload limit reached")]', { timeout: 0 }).then(() => 'dailyUploadReached');
     const uploadResult = await Promise.any([uploadCompletePromise, dailyUploadPromise])
     if (uploadResult === 'dailyUploadReached') {
-        page.close();
+        browser.close();
         throw new Error('Daily upload limit reached');
     }
 
@@ -223,7 +221,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         const process_start= page.waitForXPath('//*[contains(text(),"Processing up to SD")]', { hidden: true, timeout: 0 })
         await Promise.any([upload_complete, process_start, upload_complete_upper])
     } catch (e) {
-        page.close();
+        browser.close();
         throw new Error('Upload video failed');
     }
 
@@ -548,7 +546,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
         fs.writeFileSync(`error/${job_id}.html`, htmlContent, 'utf8');
 
-        await page.close()
+        await browser.close()
         throw new Error(
             'Please make sure you set up your default video visibility correctly, you might have forgotten. More infos : https://github.com/fawazahmed0/youtube-uploader#youtube-setup'
         )
@@ -1091,12 +1089,7 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
 }
 
 async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
-    let wsKey = await axios.get('http://127.0.0.1:9222/json/version');
-    let browser=await puppeteer.connect({
-        browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
-        defaultViewport:null
-    });
-    // browser = await puppeteer.launch(puppeteerLaunch)
+    browser = await puppeteer.launch(puppeteerLaunch)
     const TIMEOUT_DURATION = 7200000;
 
     const timeoutTimer = setTimeout(async () => {
