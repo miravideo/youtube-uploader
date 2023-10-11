@@ -1223,15 +1223,15 @@ async function login(localPage: Page, credentials: Credentials, messageTransport
     }
 
     if (useCookieStore) {
-        // const cookiesObject = await localPage.cookies()
-        // await fs.mkdirSync(cookiesDirPath, { recursive: true })
-        // // Write cookies to temp file to be used in other profile pages
-        // await fs.writeFile(cookiesFilePath, JSON.stringify(cookiesObject), function (err) {
-        //     if (err) {
-        //         messageTransport.log('The file could not be written. ' + err.message)
-        //     }
-        //     messageTransport.log('Session has been successfully saved')
-        // })
+        const cookiesObject = await localPage.cookies()
+        await fs.mkdirSync(cookiesDirPath, { recursive: true })
+        // Write cookies to temp file to be used in other profile pages
+        await fs.writeFile(cookiesFilePath, JSON.stringify(cookiesObject), function (err) {
+            if (err) {
+                messageTransport.log('The file could not be written. ' + err.message)
+            }
+            messageTransport.log('Session has been successfully saved')
+        })
     } else {
         messageTransport.log('Account logged in successfully')
     }
