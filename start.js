@@ -28,7 +28,7 @@ const _upload = async (req) => {
   }
   const currentTime = new Date();
   console.log(currentTime.toLocaleString(), ': ', video1)
-  return await upload(credentials, [video1], { headless: headless, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], })
+  return await upload(credentials, [video1], { headless: headless, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], 'executablePath': '/Applications/Thorium.app/Contents/MacOS/Thorium'})
 }
 
 // parse application/x-www-form-urlencoded
