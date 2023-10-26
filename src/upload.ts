@@ -3,6 +3,7 @@ import puppeteer from 'puppeteer-extra'
 import { PuppeteerNodeLaunchOptions, Browser, Page, ElementHandle } from 'puppeteer'
 import fs from 'fs-extra'
 import path from 'path'
+const axios  = require('axios');
 
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')()
 StealthPlugin.enabledEvasions.delete('iframe.contentWindow')
@@ -74,7 +75,7 @@ export const upload = async (
             uploadedYTLink.push(link)
         }
 
-        await browser.close()
+        await page.close()
 
         return uploadedYTLink
     } catch (err) {
@@ -83,7 +84,7 @@ export const upload = async (
             // await page.screenshot({ path: `./${credentials.job_id}.png` });
         }
 
-        if (browser) await browser.close()
+        if (browser) await page.close()
 
         throw err;
     }
@@ -184,7 +185,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     const errorMessage = await page.evaluate(() => (document.querySelector('.error-area.style-scope.ytcp-uploads-dialog') as HTMLElement)?.innerText.trim())
     if (errorMessage) {
-        await browser.close()
+        await page.close()
         throw new Error('Youtube returned an error : ' + errorMessage)
     }
 
@@ -546,7 +547,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
         fs.writeFileSync(`error/${job_id}.html`, htmlContent, 'utf8');
 
-        await browser.close()
+        await page.close()
         throw new Error(
             'Please make sure you set up your default video visibility correctly, you might have forgotten. More infos : https://github.com/fawazahmed0/youtube-uploader#youtube-setup'
         )
@@ -584,7 +585,7 @@ export const update = async (
 
         updatedYTLink.push(link)
     }
-    await browser.close()
+    await page.close()
     return updatedYTLink
 }
 
@@ -619,7 +620,7 @@ export const comment = async (
 
         commentsS.push(result)
     }
-    await browser.close()
+    await page.close()
     return commentsS
 }
 
@@ -965,7 +966,7 @@ async function loadAccount(credentials: Credentials, messageTransport: MessageTr
     } catch (error: any) {
         if (error.message === 'Recapcha found') {
             if (browser) {
-                await browser.close()
+                await page.close()
             }
             throw error
         }
@@ -975,7 +976,7 @@ async function loadAccount(credentials: Credentials, messageTransport: MessageTr
             await login(page, credentials, messageTransport, useCookieStore)
         } catch (error) {
             if (browser) {
-                await browser.close()
+                await page.close()
             }
             throw error
         }
@@ -1089,11 +1090,15 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
 }
 
 async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
-    browser = await puppeteer.launch(puppeteerLaunch)
+    let wsKey = await axios.get('http://127.0.0.1:9222/json/version');
+    let browser=await puppeteer.connect({
+        browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
+        defaultViewport:null
+    });
     const TIMEOUT_DURATION = 7200000;
 
     const timeoutTimer = setTimeout(async () => {
-        await browser.close();
+        await page.close();
         throw new Error("uploader timeout, close browser")
     }, TIMEOUT_DURATION);
 
@@ -1190,7 +1195,7 @@ async function login(localPage: Page, credentials: Credentials, messageTransport
         //         await localPage.type(smsAuthSelector, code.trim())
         //         await localPage.keyboard.press('Enter')
         //     } catch (error) {
-        //         await browser.close()
+        //         await page.close()
         //         throw error
         //     }
         // }
