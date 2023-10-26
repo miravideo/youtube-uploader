@@ -59,7 +59,7 @@ export const upload = async (
     try {
         await launchBrowser(puppeteerLaunch, useCookieStore)
 
-        await loadAccount(credentials, messageTransport, useCookieStore)
+        // await loadAccount(credentials, messageTransport, useCookieStore)
 
         const uploadedYTLink: string[] = []
 
