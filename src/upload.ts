@@ -60,7 +60,7 @@ export const upload = async (
     try {
         await launchBrowser(puppeteerLaunch, useCookieStore)
 
-        await loadAccount(credentials, messageTransport, useCookieStore)
+        // await loadAccount(credentials, messageTransport, useCookieStore)
 
         const uploadedYTLink: string[] = []
 
@@ -1106,20 +1106,20 @@ async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadC
     page = await browser.newPage()
     await page.setDefaultTimeout(timeout)
 
-    if (loadCookies) {
-        const previousSession = fs.existsSync(cookiesFilePath)
-
-        if (previousSession) {
-            // If file exist load the cookies
-            const cookiesString = fs.readFileSync(cookiesFilePath, { encoding: 'utf-8' })
-            const parsedCookies = JSON.parse(cookiesString)
-            if (parsedCookies.length !== 0) {
-                for (let cookie of parsedCookies) {
-                    await page.setCookie(cookie)
-                }
-            }
-        }
-    }
+    // if (loadCookies) {
+    //     const previousSession = fs.existsSync(cookiesFilePath)
+    //
+    //     if (previousSession) {
+    //         // If file exist load the cookies
+    //         const cookiesString = fs.readFileSync(cookiesFilePath, { encoding: 'utf-8' })
+    //         const parsedCookies = JSON.parse(cookiesString)
+    //         if (parsedCookies.length !== 0) {
+    //             for (let cookie of parsedCookies) {
+    //                 await page.setCookie(cookie)
+    //             }
+    //         }
+    //     }
+    // }
 
     await page.setViewport({ width: width, height: height })
     await page.setBypassCSP(true)
