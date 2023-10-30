@@ -316,7 +316,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 await playlistNameBoxes[0].type(' ' + playlistName.substring(0, 148))
                 await sleep(2000)
                 // click create & then done button
-                const createplaylistbtn = await page.$x("//*[normalize-space(text())='CREATE']")
+                const createplaylistbtn = await page.$x("//*[normalize-space(text())='Create']")
 
                 await sleep(2000)
                 await page.evaluate((el) => el.click(), createplaylistbtn[1])
