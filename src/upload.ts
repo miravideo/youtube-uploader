@@ -212,7 +212,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
     const dailyUploadPromise = page.waitForXPath('//div[contains(text(),"Daily upload limit reached")]', { timeout: 0 }).then(() => 'dailyUploadReached');
     const uploadResult = await Promise.any([uploadCompletePromise, dailyUploadPromise])
     if (uploadResult === 'dailyUploadReached') {
-        browser.close();
+        page.close();
         throw new Error('Daily upload limit reached');
     }
 
@@ -222,7 +222,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         const process_start= page.waitForXPath('//*[contains(text(),"Processing up to SD")]', { hidden: true, timeout: 0 })
         await Promise.any([upload_complete, process_start, upload_complete_upper])
     } catch (e) {
-        browser.close();
+        page.close();
         throw new Error('Upload video failed');
     }
 
