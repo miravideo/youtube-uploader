@@ -244,14 +244,18 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     // Wait until title & description box pops up
     if (thumb) {
-        let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
-        await page.waitForXPath(thumbnailChooserXpath)
-        const thumbBtn = await page.$x(thumbnailChooserXpath)
-        const [thumbChooser] = await Promise.all([
-            page.waitForFileChooser(),
-            thumbBtn[0].click() // button that triggers file selection
-        ])
-        await thumbChooser.accept([thumb])
+        try {
+            let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
+            await page.waitForXPath(thumbnailChooserXpath)
+            const thumbBtn = await page.$x(thumbnailChooserXpath)
+            const [thumbChooser] = await Promise.all([
+                page.waitForFileChooser(),
+                thumbBtn[0].click() // button that triggers file selection
+            ])
+            await thumbChooser.accept([thumb])
+        } catch (e) {
+
+        }
     }
     await page.waitForFunction('document.querySelectorAll(\'[id="textbox"]\').length > 1')
     const textBoxes = await page.$x('//*[@id="textbox"]')
