@@ -9,7 +9,8 @@ const headless = (process.argv[3] === undefined) ? true : (process.argv[3] === '
 
 const _upload = async (req, currentKey) => {
   const argv = req.body;
-  const credentials = { email: argv.email, pass: argv.password, recoveryemail: argv.recovery_email, job_id: argv.job_id}
+  // const credentials = { email: argv.email, pass: argv.password, recoveryemail: argv.recovery_email, job_id: argv.job_id}
+  const credentials = { email: 'asd576225953@gmail.com', pass: argv.password, recoveryemail: argv.recovery_email, job_id: argv.job_id}
   const video1 = {
     path: argv.path,
     title: argv.title,
