@@ -1,4 +1,5 @@
 const {upload} = require('./dist');
+const uuid = require('uuid');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -6,13 +7,13 @@ const app = express();
 
 const headless = (process.argv[3] === undefined) ? true : (process.argv[3] === 'true')
 
-const _upload = async (req) => {
+const _upload = async (req, currentKey) => {
   const argv = req.body;
   const credentials = { email: argv.email, pass: argv.password, recoveryemail: argv.recovery_email, job_id: argv.job_id}
   const video1 = {
     path: argv.path,
     title: argv.title,
-    description: argv.description,
+    description: argv.description.slice(0, 4900) + `\n${currentKey}`,
     onProgress: (progress) => { console.log('progress', progress) },
     onSuccess: (result) => console.log('result', result),
     channelName: argv.channel_name,
@@ -39,19 +40,40 @@ app.use(bodyParser.json());
 
 let lock = false
 
+const getKey = () => {
+  const newUuid = uuid.v4();
+  return newUuid.slice(0, 4)
+}
+
+const currentTime = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+  const day = String(currentDate.getDate()).padStart(2, '0');
+  const hours = String(currentDate.getHours()).padStart(2, '0');
+  const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+  const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 app.post('/upload', async (req, res) => {
   if (lock) {
     res.end(JSON.stringify({reject: true}));
     return
   }
   lock = true
-  _upload(req).then((videoLink) => {
+  const currentKey = getKey()
+  const argv = req.body;
+  const jobId = argv.job_id;
+  _upload(req, currentKey).then((videoLink) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({video: videoLink}));
     lock = false
+    console.log(`${currentTime()} [info]|KEY:[${currentKey}]|JOBID[${jobId}]:`, videoLink)
+
   }).catch((e) => {
     const error = new Error(e);
-    console.log('error', error)
+    console.log(`${currentTime()} [error]|KEY:[${currentKey}]|JOBID[${jobId}]:`, error)
     res.end(JSON.stringify({error: error.message}));
     lock = false
   })
