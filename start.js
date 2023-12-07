@@ -2,6 +2,7 @@ const {upload} = require('./dist');
 const uuid = require('uuid');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 const app = express();
 
@@ -63,12 +64,23 @@ app.post('/upload', async (req, res) => {
     return
   }
   lock = true
+  const cacheFolder = '/tmp/uploadJob'
+  fs.mkdirSync(cacheFolder, { recursive: true })
+
   const currentKey = getKey()
   const argv = req.body;
   const jobId = argv.job_id;
+  const cachePath = `${cacheFolder}/${jobId}.txt`
+  if (fs.existsSync(cachePath)) {
+    const videoLink = fs.readFileSync(cachePath, 'utf8');
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify({video: [videoLink]}));
+    return
+  }
   _upload(req, currentKey).then((videoLink) => {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({video: videoLink}));
+    fs.writeFileSync(cachePath, videoLink[0], 'utf8');
     lock = false
     console.log(`${currentTime()} [info]|KEY:[${currentKey}]|JOBID[${jobId}]:`, videoLink)
 
