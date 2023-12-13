@@ -244,24 +244,19 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     // Wait until title & description box pops up
     if (thumb) {
-        try {
-            let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
-            await page.waitForXPath(thumbnailChooserXpath)
-            const thumbBtn = await page.$x(thumbnailChooserXpath)
-            await thumbBtn[0].click()
-            await sleep(3000);
-            const thumbnailWarningElements = await page.$x('//*[@id="wizard"]/ytcp-ve/div')
+        let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
+        await page.waitForXPath(thumbnailChooserXpath)
+        const thumbBtn = await page.$x(thumbnailChooserXpath)
+        await thumbBtn[0].click()
+        await sleep(3000);
+        const thumbnailWarningElements = await page.$x('//*[@id="wizard"]/ytcp-ve/div')
 
-            if (thumbnailWarningElements.length > 0) {
-                console.log('封面图上传失败')
-                throw new Error('封面图上传失败')
-            } else {
-                const thumbChooser = await page.waitForFileChooser();
-                await thumbChooser.accept([thumb]);
-            }
-        } catch (e) {
-            console.log(e)
-            throw e
+        if (thumbnailWarningElements.length > 0) {
+            console.log('封面图上传失败')
+            throw new Error('封面图上传达到上限')
+        } else {
+            const thumbChooser = await page.waitForFileChooser();
+            await thumbChooser.accept([thumb]);
         }
     }
     await page.waitForFunction('document.querySelectorAll(\'[id="textbox"]\').length > 1')
