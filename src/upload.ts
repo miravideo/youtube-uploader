@@ -252,7 +252,14 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
                 page.waitForFileChooser(),
                 thumbBtn[0].click() // button that triggers file selection
             ])
-            await thumbChooser.accept([thumb])
+            await sleep(3000);
+            const thumbnailWarningElements = await page.$x('//*[@id="wizard"]/ytcp-ve/div')
+            if (thumbnailWarningElements.length > 0) {
+                const closeElement = await page.$x('//*[@id="close-button"]/div')
+                await closeElement[0].click()
+            } else {
+                await thumbChooser.accept([thumb])
+            }
         } catch (e) {
 
         }
