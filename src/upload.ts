@@ -254,14 +254,17 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
             ])
             await sleep(3000);
             const thumbnailWarningElements = await page.$x('//*[@id="wizard"]/ytcp-ve/div')
+            console.log('thumbnailWarningElements', thumbnailWarningElements)
+
             if (thumbnailWarningElements.length > 0) {
-                const closeElement = await page.$x('//*[@id="close-button"]/div')
-                await closeElement[0].click()
+                console.log('封面图上传失败')
+                throw new Error('封面图上传失败')
             } else {
                 await thumbChooser.accept([thumb])
             }
         } catch (e) {
-
+            console.log(e)
+            throw e
         }
     }
     await page.waitForFunction('document.querySelectorAll(\'[id="textbox"]\').length > 1')
