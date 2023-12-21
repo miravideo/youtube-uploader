@@ -31,6 +31,7 @@ const _upload = async (req, currentKey) => {
   }
   const currentTime = new Date();
   console.log(currentTime.toLocaleString(), ': ', video1)
+  credentials.port = process.argv[4] || 9222
   return await upload(credentials, [video1], { headless: headless, args: [ '--no-sandbox', '--disable-setuid-sandbox' ], 'executablePath': '/Applications/Thorium.app/Contents/MacOS/Thorium'})
 }
 

@@ -40,8 +40,9 @@ export const upload = async (
     credentials: Credentials,
     videos: Video[],
     puppeteerLaunch?: PuppeteerNodeLaunchOptions,
-    messageTransport: MessageTransport = defaultMessageTransport
+    messageTransport: MessageTransport = defaultMessageTransport,
 ) => {
+    const port = credentials.port || 9222
     cookiesDirPath = path.join('.', 'yt-auth')
     cookiesFilePath = path.join(
         cookiesDirPath,
@@ -58,7 +59,7 @@ export const upload = async (
 
 
     try {
-        await launchBrowser(puppeteerLaunch, useCookieStore)
+        await launchBrowser(puppeteerLaunch, useCookieStore, port)
 
         // await loadAccount(credentials, messageTransport, useCookieStore)
 
@@ -1102,8 +1103,8 @@ async function changeHomePageLangIfNeeded(localPage: Page) {
     await changeHomePageLangIfNeeded(localPage);
 }
 
-async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true) {
-    let wsKey = await axios.get('http://127.0.0.1:9222/json/version');
+async function launchBrowser(puppeteerLaunch?: PuppeteerNodeLaunchOptions, loadCookies: boolean = true, port = 9222) {
+    let wsKey = await axios.get(`http://127.0.0.1:${port}/json/version`);
     let browser=await puppeteer.connect({
         browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
         defaultViewport:null
