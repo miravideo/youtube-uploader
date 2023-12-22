@@ -245,25 +245,18 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     // Wait until title & description box pops up
     if (thumb) {
-            let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
-            await page.waitForXPath(thumbnailChooserXpath)
-            const thumbBtn = await page.$x(thumbnailChooserXpath)
-            await thumbBtn[0].click() // button that triggers file selection
-            await sleep(3000);
-            const dialog = await page.$x("//*[normalize-space(text())='Daily customised thumbnail limit reached']")
-            if (dialog.length > 0) {
-                throw new Error('封面图上传超过限制')
-            }
+        let thumbnailChooserXpath = xpathTextSelector("upload thumbnail")
+        await page.waitForXPath(thumbnailChooserXpath)
+        const thumbBtn = await page.$x(thumbnailChooserXpath)
+        await thumbBtn[0].click() // button that triggers file selection
+        await sleep(3000);
+        const dialog = await page.$x("//*[normalize-space(text())='Daily customised thumbnail limit reached']")
+        if (dialog.length > 0) {
+            throw new Error('封面图上传超过限制')
+        }
         try {
             const thumbChooser = await page.waitForFileChooser()
-            await sleep(3000);
-            const thumbnailWarningElements = await page.$x('//*[@id="wizard"]/ytcp-ve/div')
-            if (thumbnailWarningElements.length > 0) {
-                const closeElement = await page.$x('//*[@id="close-button"]/div')
-                await closeElement[0].click()
-            } else {
-                await thumbChooser.accept([thumb])
-            }
+            await thumbChooser.accept([thumb])
         } catch (e) {
             throw e
         }
