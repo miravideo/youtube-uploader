@@ -248,7 +248,9 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         let thumbnailChooserXpath = xpathTextSelector("Upload thumbnail")
         await page.waitForXPath(thumbnailChooserXpath)
         const thumbBtn = await page.$x(thumbnailChooserXpath)
+        console.log('????')
         await thumbBtn[0].click() // button that triggers file selection
+        console.log('click 结束')
         await sleep(3000);
         const dialog = await page.$x("//*[normalize-space(text())='Daily customised thumbnail limit reached']")
         if (dialog.length > 0) {
