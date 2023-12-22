@@ -249,6 +249,7 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
         await page.waitForXPath(thumbnailChooserXpath)
         const thumbBtn = await page.$x(thumbnailChooserXpath)
         console.log('????')
+        const thumbChooser = await page.waitForFileChooser()
         await thumbBtn[0].click() // button that triggers file selection
         console.log('click 结束')
         await sleep(3000);
@@ -257,7 +258,6 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
             throw new Error('封面图上传超过限制')
         }
         try {
-            const thumbChooser = await page.waitForFileChooser()
             await thumbChooser.accept([thumb])
         } catch (e) {
             throw e
