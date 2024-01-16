@@ -197,10 +197,14 @@ async function uploadVideo(videoJSON: Video, messageTransport: MessageTransport)
 
     // Check if daily upload limit is reached
     const dailyUploadPromise = page.waitForXPath('//div[contains(text(),"Daily upload limit reached")]', { timeout: 0 }).then(() => 'dailyUploadReached');
-    const uploadResult = await Promise.any([uploadCompletePromise, dailyUploadPromise])
+    const tooManyStrikes = page.waitForXPath('//div[contains(text(),"Too many strikes")]', { timeout: 0 }).then(() => 'tooManyStrikes');
+    const uploadResult = await Promise.any([uploadCompletePromise, dailyUploadPromise, tooManyStrikes])
     if (uploadResult === 'dailyUploadReached') {
         page.close();
         throw new Error('Daily upload limit reached');
+    } else if (uploadResult === 'tooManyStrikes') {
+        page.close();
+        throw new Error('Too many strikes');
     }
 
     try {
