@@ -76,6 +76,7 @@ app.post('/upload', async (req, res) => {
     const videoLink = fs.readFileSync(cachePath, 'utf8');
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({video: [videoLink]}));
+    lock = false
     return
   }
   _upload(req, currentKey).then((videoLink) => {
