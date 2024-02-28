@@ -1304,7 +1304,7 @@ async function changeChannel(channelName: string) {
     await page.goto("https://www.youtube.com/channel_switcher");
 
     const channelNameXPath =
-        `//*[normalize-space(text())=“${channelName}”]`;
+        `//*[normalize-space(text())="${channelName}"]`;
     const element = await page.waitForXPath(channelNameXPath);
 
     await element!.click()
