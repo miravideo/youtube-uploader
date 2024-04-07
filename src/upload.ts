@@ -1330,7 +1330,11 @@ async function changeChannel(channelName: string) {
         console.log('no got it button')
     }
 
-
+    await sleep(1500)
+    const currentUrl = page.url();
+    if (currentUrl.startsWith('https://support.google.com/')) {
+        throw new Error("账号已被移除")
+    }
 }
 
 function escapeQuotesForXPath(str: string) {
